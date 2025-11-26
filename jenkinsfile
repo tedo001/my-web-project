@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Get code from SCM (like Git)
+                git 'https://github.com/your-username/my-web-project.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Building project...'
+                // For a static HTML project, there's no real build step
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Testing project...'
+                // Simple test: check if index.html exists
+                script {
+                    if (!fileExists('index.html')) {
+                        error 'index.html not found!'
+                    }
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying project...'
+                // Example: copy to a folder representing a web server
+                sh 'mkdir -p /var/www/html/my-web-project'
+                sh 'cp index.html /var/www/html/my-web-project/'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Deployment successful!'
+        }
+        failure {
+            echo 'Deployment failed!'
+        }
+    }
+}
